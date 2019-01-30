@@ -92,7 +92,7 @@ class plgSystemTemplateCompanion extends JPlugin
 				$this->app->enqueueMessage('lessphp error: ' . $e->getMessage(), 'warning');
 
 				// Return value is only used for unit testing
-				return 'error'; 
+				return 'lessphp error'; 
 			}
 		}
 		

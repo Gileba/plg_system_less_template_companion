@@ -130,8 +130,24 @@ class PlgSystemTemplateCompanionTest extends TestCaseDatabase
 		$this->assertEquals($result, 'unreadable');
 	}
 		
+	public function testOnExtensionAfterSaveReadableEmptyFileComTemplates() {
+		$testContext = 'com_templates.style';
+		$table = (object) array('params' => '{"useLESS":"true"}');
+		$this->setProtectedProperty($this->class, 'lessFile', 'plg_system_templatecompanion/tests/less/empty.less');
+		$result = $this->class->onExtensionAfterSave($testContext, $table, false);
+		$this->assertEquals($result, 'lessphp error');
+	}
+
+	public function testOnExtensionAfterSaveReadableEmptyFileComAdvancedTemplates() {
+		$testContext = 'com_advancedtemplates.style';
+		$table = (object) array('params' => '{"useLESS":"true"}');
+		$this->setProtectedProperty($this->class, 'lessFile', 'plg_system_templatecompanion/tests/less/empty.less');
+		$result = $this->class->onExtensionAfterSave($testContext, $table, false);
+		$this->assertEquals($result, 'lessphp error');
+	}
+
 	// Test correct behavior of onExtensionAfterSave when the lessFile is not readable in the context com_advancedtemplates.style
-	public function testOnExtensionAfterSaveNotReadableComAdvancedTemplates(){
+	public function testOnExtensionAfterSaveNotReadableComAdvancedTemplates() {
 		$testContext = 'com_advancedtemplates.style';
 		$table = (object) array('params' => '{"useLESS":"true"}');
 		$result = $this->class->onExtensionAfterSave($testContext, $table, false);
@@ -142,10 +158,13 @@ class PlgSystemTemplateCompanionTest extends TestCaseDatabase
 	public function testOnBeforeRenderWithoutWriteAccess() {
 		// Joomla standard testcase doesn't have a template set as default, so onBeforeRender cannot find the less source file
 		$this->assertEquals('unreadable', $this->class->onBeforeRender());
-		$this->setProtectedProperty($this->class, 'lessFile', 'less/template.less');
-		echo $this->class->lessFile;
-		$this->assertEquals('error', $this->class->onBeforeRender());
-		
+	}
+	
+	public function testOnBeforeRenderWithWriteAccessEmptyFile() {
+		$this->setProtectedProperty($this->class, 'lessFile', 'plg_system_templatecompanion/tests/less/empty.less');
+		$this->assertEquals('lessphp error', $this->class->onBeforeRender());
+	}
+			
 		/*
 		 * TODO
 		 *  1. Make sure test does get access to a less file
@@ -155,6 +174,5 @@ class PlgSystemTemplateCompanionTest extends TestCaseDatabase
 		 *
 		 */
 		
-	}
 }
 ?>
