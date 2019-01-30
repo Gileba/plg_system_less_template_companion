@@ -44,6 +44,23 @@ class PlgSystemTemplateCompanionTest extends TestCaseDatabase
 
 		return $method->invokeArgs($object, $parameters);
 	}
+	
+	/**
+	 * Sets a protected property on a given object via reflection
+	 *
+	 * @param $object - instance in which protected value is being modified
+	 * @param $property - property on instance being modified
+	 * @param $value - new value of the property being modified
+	 *
+	 * @return void
+	*/
+	public function setProtectedProperty($object, $property, $value)
+	{
+    	$reflection = new ReflectionClass($object);
+		$reflection_property = $reflection->getProperty($property);
+		$reflection_property->setAccessible(true);
+		$reflection_property->setValue($object, $value);
+	}
 
 	// Test correct behavior of setLessVariable on an array with a single correct element
 	public function testParseVariable()
@@ -125,7 +142,7 @@ class PlgSystemTemplateCompanionTest extends TestCaseDatabase
 	public function testOnBeforeRenderWithoutWriteAccess() {
 		// Joomla standard testcase doesn't have a template set as default, so onBeforeRender cannot find the less source file
 		$this->assertEquals('unreadable', $this->class->onBeforeRender());
-		$this->lessFile = 'less/template.less';
+		$this->setProtectedProperty($this->class, 'lessFile', 'less/template.less';
 		$this->assertEquals('error', $this->class->onBeforeRender());
 		
 		/*
